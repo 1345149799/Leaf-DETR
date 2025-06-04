@@ -77,7 +77,7 @@ detectors, confirming its powerful dense leaf detection capability.
 **Visualization comparison**
 
 ![Visualization](src/vis.png)
-Figure 1: Visualization comparison. (a)Select the image area with dense leaves, (b) SABL, (c) Faster R-CNN, (d) DDQ, (e) Leaf-DETR. The
+Figure 3: Visualization comparison. (a)Select the image area with dense leaves, (b) SABL, (c) Faster R-CNN, (d) DDQ, (e) Leaf-DETR. The
 yellow boxes indicate undetected leaves. The yellow boxes represent the undetected leaves, and Leaf-DETR achieves comprehensive detection.
 The yellow boxes represent the undetected leaves. Compared with other models, Leaf-DETR has no cases of missed detection, confirming its
 superior detection coverage.
@@ -91,10 +91,10 @@ Crop growth monitoring is crucial for sustainable agricultural production, as it
 
 ![importance](src/importance.png)
 
-Figure 1: Motivation of leaf-deter. (a) The importance of leaves and the role of detecting leaves. (b) Differences in the DETRs architecture, Leaf-DETR has higher attention to the leaf edges and lower matching cost.
+Figure 4: Motivation of leaf-deter. (a) The importance of leaves and the role of detecting leaves. (b) Differences in the DETRs architecture, Leaf-DETR has higher attention to the leaf edges and lower matching cost.
 
 **Our pipeline**
 
 ![pipeline](src/overview.png)
 
-Figure 2: Schematic diagram of kiwifruit leaf Data collection and application. (a) Data collection: Using UAV for high-altitude aerial imaging, (b) Image annotation: Through image screening, cropping, manual annotation, and AI-assisted annotation, (c) Model architecture: The proposed Leaf-DETR framework is equipped with P-FPN, CQR strategy, and the improved JTAH, (d) Agricultural application: Real-time leaf data is acquired through deployed cameras, enabling various downstream applications.
+Figure 5: Schematic diagram of kiwifruit leaf Data collection and application. (a) Data collection: Using UAV for high-altitude aerial imaging, (b) Image annotation: Through image screening, cropping, manual annotation, and AI-assisted annotation, (c) Model architecture: The proposed Leaf-DETR framework is equipped with P-FPN, CQR strategy, and the improved JTAH, (d) Agricultural application: Real-time leaf data is acquired through deployed cameras, enabling various downstream applications.
