@@ -1,0 +1,2299 @@
+2023-12-04 22:36:59,693 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: win32
+Python: 3.7.11 (default, Jul 27 2021, 09:42:29) [MSC v.1916 64 bit (AMD64)]
+CUDA available: True
+GPU 0: NVIDIA GeForce RTX 4070
+CUDA_HOME: C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.3
+NVCC: Cuda compilation tools, release 11.3, V11.3.58
+MSVC: Microsoft (R) C/C++ Optimizing Compiler Version 19.00.24210 for x64
+GCC: n/a
+PyTorch: 1.11.0+cu113
+PyTorch compiling details: PyTorch built with:
+  - C++ Version: 199711
+  - MSVC 192829337
+  - Intel(R) Math Kernel Library Version 2020.0.2 Product Build 20200624 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.5.2 (Git Hash a9302535553c73243c632ad3c4c80beec3d19a1e)
+  - OpenMP 2019
+  - LAPACK is enabled (usually provided by MKL)
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.2
+  - Magma 2.5.4
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=C:/actions-runner/_work/pytorch/pytorch/builder/windows/tmp_bin/sccache-cl.exe, CXX_FLAGS=/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -DUSE_PTHREADPOOL -openmp:experimental -IC:/actions-runner/_work/pytorch/pytorch/builder/windows/mkl/include -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOCUPTI -DUSE_FBGEMM -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.11.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=OFF, USE_NNPACK=OFF, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+TorchVision: 0.12.0+cu113
+OpenCV: 4.8.1
+MMCV: 1.5.0
+MMCV Compiler: MSVC 192930140
+MMCV CUDA Compiler: 11.3
+MMDetection: 2.25.3+
+------------------------------------------------------------
+
+2023-12-04 22:37:01,154 - mmdet - INFO - Distributed training: False
+2023-12-04 22:37:02,647 - mmdet - INFO - Config:
+dataset_type = 'CocoDataset'
+data_root = 'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
+    dict(type='RandomFlip', flip_ratio=0.5),
+    dict(
+        type='AutoAugment',
+        policies=[[{
+            'type':
+            'Resize',
+            'img_scale': [(480, 1333), (512, 1333), (544, 1333), (576, 1333),
+                          (608, 1333), (640, 1333), (672, 1333), (704, 1333),
+                          (736, 1333), (768, 1333), (800, 1333)],
+            'multiscale_mode':
+            'value',
+            'keep_ratio':
+            True
+        }],
+                  [{
+                      'type': 'Resize',
+                      'img_scale': [(400, 4200), (500, 4200), (600, 4200)],
+                      'multiscale_mode': 'value',
+                      'keep_ratio': True
+                  }, {
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute_range',
+                      'crop_size': (384, 600),
+                      'allow_negative_crop': True
+                  }, {
+                      'type':
+                      'Resize',
+                      'img_scale': [(480, 1333), (512, 1333), (544, 1333),
+                                    (576, 1333), (608, 1333), (640, 1333),
+                                    (672, 1333), (704, 1333), (736, 1333),
+                                    (768, 1333), (800, 1333)],
+                      'multiscale_mode':
+                      'value',
+                      'override':
+                      True,
+                      'keep_ratio':
+                      True
+                  }]]),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=1),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1333, 800),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=1),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=2,
+    workers_per_gpu=2,
+    train=dict(
+        type='CocoDataset',
+        ann_file=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/annotations/instances_train2017.json',
+        img_prefix=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/train2017/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
+            dict(type='RandomFlip', flip_ratio=0.5),
+            dict(
+                type='AutoAugment',
+                policies=[[{
+                    'type':
+                    'Resize',
+                    'img_scale': [(480, 1333), (512, 1333), (544, 1333),
+                                  (576, 1333), (608, 1333), (640, 1333),
+                                  (672, 1333), (704, 1333), (736, 1333),
+                                  (768, 1333), (800, 1333)],
+                    'multiscale_mode':
+                    'value',
+                    'keep_ratio':
+                    True
+                }],
+                          [{
+                              'type': 'Resize',
+                              'img_scale': [(400, 4200), (500, 4200),
+                                            (600, 4200)],
+                              'multiscale_mode': 'value',
+                              'keep_ratio': True
+                          }, {
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute_range',
+                              'crop_size': (384, 600),
+                              'allow_negative_crop': True
+                          }, {
+                              'type':
+                              'Resize',
+                              'img_scale': [(480, 1333), (512, 1333),
+                                            (544, 1333), (576, 1333),
+                                            (608, 1333), (640, 1333),
+                                            (672, 1333), (704, 1333),
+                                            (736, 1333), (768, 1333),
+                                            (800, 1333)],
+                              'multiscale_mode':
+                              'value',
+                              'override':
+                              True,
+                              'keep_ratio':
+                              True
+                          }]]),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=1),
+            dict(type='DefaultFormatBundle'),
+            dict(
+                type='Collect',
+                keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks'])
+        ],
+        filter_empty_gt=False),
+    val=dict(
+        type='CocoDataset',
+        ann_file=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/annotations/instances_val2017.json',
+        img_prefix=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/val2017/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1333, 800),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=1),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]),
+    test=dict(
+        type='CocoDataset',
+        ann_file=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/annotations/instances_val2017.json',
+        img_prefix=
+        'C:/Users/Administrator/Desktop/read-Co-DETR-main/data/coco/val2017/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1333, 800),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=1),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+evaluation = dict(interval=1, metric='bbox')
+checkpoint_config = dict(interval=1)
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+custom_hooks = [dict(type='NumClassCheckHook')]
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+opencv_num_threads = 0
+mp_start_method = 'fork'
+auto_scale_lr = dict(enable=False, base_batch_size=16)
+num_dec_layer = 6
+lambda_2 = 2.0
+model = dict(
+    type='CoDETR',
+    backbone=dict(
+        type='ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(1, 2, 3),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=False),
+        norm_eval=True,
+        style='pytorch'),
+    neck=dict(
+        type='ChannelMapper',
+        in_channels=[512, 1024, 2048],
+        kernel_size=1,
+        out_channels=256,
+        act_cfg=None,
+        norm_cfg=dict(type='GN', num_groups=32),
+        num_outs=4),
+    rpn_head=dict(
+        type='RPNHead',
+        in_channels=256,
+        feat_channels=256,
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            octave_base_scale=4,
+            scales_per_octave=3,
+            ratios=[0.5, 1.0, 2.0],
+            strides=[8, 16, 32, 64, 128]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[0.0, 0.0, 0.0, 0.0],
+            target_stds=[1.0, 1.0, 1.0, 1.0]),
+        loss_cls=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=12.0),
+        loss_bbox=dict(type='L1Loss', loss_weight=12.0)),
+    query_head=dict(
+        type='CoDeformDETRHead',
+        num_query=300,
+        num_classes=80,
+        in_channels=2048,
+        sync_cls_avg_factor=True,
+        with_box_refine=True,
+        as_two_stage=True,
+        mixed_selection=True,
+        transformer=dict(
+            type='CoDeformableDetrTransformer',
+            num_co_heads=2,
+            encoder=dict(
+                type='DetrTransformerEncoder',
+                num_layers=6,
+                transformerlayers=dict(
+                    type='BaseTransformerLayer',
+                    attn_cfgs=dict(
+                        type='MultiScaleDeformableAttention',
+                        embed_dims=256,
+                        dropout=0.0),
+                    feedforward_channels=2048,
+                    ffn_dropout=0.0,
+                    operation_order=('self_attn', 'norm', 'ffn', 'norm'))),
+            decoder=dict(
+                type='CoDeformableDetrTransformerDecoder',
+                num_layers=6,
+                return_intermediate=True,
+                look_forward_twice=True,
+                transformerlayers=dict(
+                    type='DetrTransformerDecoderLayer',
+                    attn_cfgs=[
+                        dict(
+                            type='MultiheadAttention',
+                            embed_dims=256,
+                            num_heads=8,
+                            dropout=0.0),
+                        dict(
+                            type='MultiScaleDeformableAttention',
+                            embed_dims=256,
+                            dropout=0.0)
+                    ],
+                    feedforward_channels=2048,
+                    ffn_dropout=0.0,
+                    operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
+                                     'ffn', 'norm')))),
+        positional_encoding=dict(
+            type='SinePositionalEncoding',
+            num_feats=128,
+            normalize=True,
+            offset=-0.5),
+        loss_cls=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            loss_weight=2.0),
+        loss_bbox=dict(type='L1Loss', loss_weight=5.0),
+        loss_iou=dict(type='GIoULoss', loss_weight=2.0)),
+    roi_head=[
+        dict(
+            type='CoStandardRoIHead',
+            bbox_roi_extractor=dict(
+                type='SingleRoIExtractor',
+                roi_layer=dict(
+                    type='RoIAlign', output_size=7, sampling_ratio=0),
+                out_channels=256,
+                featmap_strides=[8, 16, 32, 64],
+                finest_scale=112),
+            bbox_head=dict(
+                type='Shared2FCBBoxHead',
+                in_channels=256,
+                fc_out_channels=1024,
+                roi_feat_size=7,
+                num_classes=80,
+                bbox_coder=dict(
+                    type='DeltaXYWHBBoxCoder',
+                    target_means=[0.0, 0.0, 0.0, 0.0],
+                    target_stds=[0.1, 0.1, 0.2, 0.2]),
+                reg_class_agnostic=False,
+                reg_decoded_bbox=True,
+                loss_cls=dict(
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False,
+                    loss_weight=12.0),
+                loss_bbox=dict(type='GIoULoss', loss_weight=120.0)),
+            mask_roi_extractor=dict(
+                type='SingleRoIExtractor',
+                roi_layer=dict(
+                    type='RoIAlign', output_size=14, sampling_ratio=0),
+                out_channels=256,
+                featmap_strides=[8, 16, 32, 64],
+                finest_scale=112),
+            mask_head=dict(
+                type='FCNMaskHead',
+                num_convs=4,
+                in_channels=256,
+                conv_out_channels=256,
+                num_classes=80,
+                loss_mask=dict(
+                    type='CrossEntropyLoss', use_mask=True, loss_weight=12.0)))
+    ],
+    bbox_head=[
+        dict(
+            type='CoATSSHead',
+            num_classes=80,
+            in_channels=256,
+            stacked_convs=1,
+            feat_channels=256,
+            anchor_generator=dict(
+                type='AnchorGenerator',
+                ratios=[1.0],
+                octave_base_scale=8,
+                scales_per_octave=1,
+                strides=[8, 16, 32, 64, 128]),
+            bbox_coder=dict(
+                type='DeltaXYWHBBoxCoder',
+                target_means=[0.0, 0.0, 0.0, 0.0],
+                target_stds=[0.1, 0.1, 0.2, 0.2]),
+            loss_cls=dict(
+                type='FocalLoss',
+                use_sigmoid=True,
+                gamma=2.0,
+                alpha=0.25,
+                loss_weight=12.0),
+            loss_bbox=dict(type='GIoULoss', loss_weight=24.0),
+            loss_centerness=dict(
+                type='CrossEntropyLoss', use_sigmoid=True, loss_weight=12.0))
+    ],
+    train_cfg=[
+        dict(
+            assigner=dict(
+                type='HungarianAssigner',
+                cls_cost=dict(type='FocalLossCost', weight=2.0),
+                reg_cost=dict(
+                    type='BBoxL1Cost', weight=5.0, box_format='xywh'),
+                iou_cost=dict(type='IoUCost', iou_mode='giou', weight=2.0))),
+        dict(
+            rpn=dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.7,
+                    neg_iou_thr=0.3,
+                    min_pos_iou=0.3,
+                    match_low_quality=True,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=256,
+                    pos_fraction=0.5,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=False),
+                allowed_border=-1,
+                pos_weight=-1,
+                debug=False),
+            rpn_proposal=dict(
+                nms_pre=4000,
+                max_per_img=1000,
+                nms=dict(type='nms', iou_threshold=0.7),
+                min_bbox_size=0),
+            rcnn=dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.5,
+                    neg_iou_thr=0.5,
+                    min_pos_iou=0.5,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                mask_size=28,
+                pos_weight=-1,
+                debug=False)),
+        dict(
+            assigner=dict(type='ATSSAssigner', topk=9),
+            allowed_border=-1,
+            pos_weight=-1,
+            debug=False)
+    ],
+    test_cfg=[
+        dict(max_per_img=100),
+        dict(
+            rpn=dict(
+                nms_pre=1000,
+                max_per_img=1000,
+                nms=dict(type='nms', iou_threshold=0.7),
+                min_bbox_size=0),
+            rcnn=dict(
+                score_thr=0.0,
+                nms=dict(type='nms', iou_threshold=0.5),
+                mask_thr_binary=0.5,
+                max_per_img=100)),
+        dict(
+            nms_pre=1000,
+            min_bbox_size=0,
+            score_thr=0.0,
+            nms=dict(type='nms', iou_threshold=0.6),
+            max_per_img=100)
+    ])
+optimizer = dict(
+    type='AdamW',
+    lr=0.0002,
+    weight_decay=0.0001,
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            backbone=dict(lr_mult=0.1),
+            sampling_offsets=dict(lr_mult=0.1),
+            reference_points=dict(lr_mult=0.1))))
+optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
+lr_config = dict(policy='step', step=[11])
+runner = dict(type='EpochBasedRunner', max_epochs=12)
+work_dir = 'workdir'
+auto_resume = False
+gpu_ids = [0]
+
+2023-12-04 22:37:02,652 - mmdet - INFO - Set random seed to 510050398, deterministic: False
+2023-12-04 22:37:02,878 - mmdet - INFO - initialize RPNHead with init_cfg {'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01}
+Name of parameter - Initialization information
+
+rpn_conv.weight - torch.Size([256, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_conv.bias - torch.Size([256]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_cls.weight - torch.Size([9, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_cls.bias - torch.Size([9]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_reg.weight - torch.Size([36, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_reg.bias - torch.Size([36]): 
+NormalInit: mean=0, std=0.01, bias=0 
+2023-12-04 22:37:02,950 - mmdet - INFO - initialize Shared2FCBBoxHead with init_cfg [{'type': 'Normal', 'std': 0.01, 'override': {'name': 'fc_cls'}}, {'type': 'Normal', 'std': 0.001, 'override': {'name': 'fc_reg'}}, {'type': 'Xavier', 'distribution': 'uniform', 'override': [{'name': 'shared_fcs'}, {'name': 'cls_fcs'}, {'name': 'reg_fcs'}]}]
+Name of parameter - Initialization information
+
+bbox_head.fc_cls.weight - torch.Size([81, 1024]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+bbox_head.fc_cls.bias - torch.Size([81]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+bbox_head.fc_reg.weight - torch.Size([320, 1024]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+bbox_head.fc_reg.bias - torch.Size([320]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+bbox_head.shared_fcs.0.weight - torch.Size([1024, 12544]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+bbox_head.shared_fcs.0.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+bbox_head.shared_fcs.1.weight - torch.Size([1024, 1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+bbox_head.shared_fcs.1.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+mask_head.convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+mask_head.convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoStandardRoIHead  
+
+mask_head.convs.1.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+mask_head.convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoStandardRoIHead  
+
+mask_head.convs.2.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+mask_head.convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoStandardRoIHead  
+
+mask_head.convs.3.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+mask_head.convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoStandardRoIHead  
+
+mask_head.upsample.weight - torch.Size([256, 256, 2, 2]): 
+Initialized by user-defined `init_weights` in FCNMaskHead  
+
+mask_head.upsample.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in FCNMaskHead  
+
+mask_head.conv_logits.weight - torch.Size([80, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in FCNMaskHead  
+
+mask_head.conv_logits.bias - torch.Size([80]): 
+Initialized by user-defined `init_weights` in FCNMaskHead  
+2023-12-04 22:37:03,011 - mmdet - INFO - initialize CoATSSHead with init_cfg {'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'atss_cls', 'std': 0.01, 'bias_prob': 0.01}}
+Name of parameter - Initialization information
+
+cls_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+cls_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+cls_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+reg_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+reg_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+reg_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+atss_cls.weight - torch.Size([80, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=-4.59511985013459 
+
+atss_cls.bias - torch.Size([80]): 
+NormalInit: mean=0, std=0.01, bias=-4.59511985013459 
+
+atss_reg.weight - torch.Size([4, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+atss_reg.bias - torch.Size([4]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+atss_centerness.weight - torch.Size([1, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+atss_centerness.bias - torch.Size([1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+scales.0.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+scales.1.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+scales.2.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+scales.3.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+
+scales.4.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoATSSHead  
+2023-12-04 22:37:03,038 - mmdet - INFO - initialize ResNet with init_cfg [{'type': 'Kaiming', 'layer': 'Conv2d'}, {'type': 'Constant', 'val': 1, 'layer': ['_BatchNorm', 'GroupNorm']}]
+2023-12-04 22:37:03,118 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,119 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,119 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,120 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,121 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,121 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,122 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,123 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,124 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,125 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,126 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,127 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,127 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,130 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,131 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,133 - mmdet - INFO - initialize Bottleneck with init_cfg {'type': 'Constant', 'val': 0, 'override': {'name': 'norm3'}}
+2023-12-04 22:37:03,143 - mmdet - INFO - initialize ChannelMapper with init_cfg {'type': 'Xavier', 'layer': 'Conv2d', 'distribution': 'uniform'}
+Name of parameter - Initialization information
+
+backbone.conv1.weight - torch.Size([64, 3, 7, 7]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.conv1.weight - torch.Size([64, 64, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.0.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.conv2.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.0.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.conv3.weight - torch.Size([256, 64, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.0.bn3.weight - torch.Size([256]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer1.0.bn3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.downsample.0.weight - torch.Size([256, 64, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.0.downsample.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.0.downsample.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.1.conv1.weight - torch.Size([64, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.1.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.1.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.1.conv2.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.1.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.1.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.1.conv3.weight - torch.Size([256, 64, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.1.bn3.weight - torch.Size([256]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer1.1.bn3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.2.conv1.weight - torch.Size([64, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.2.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.2.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.2.conv2.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.2.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.2.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer1.2.conv3.weight - torch.Size([256, 64, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer1.2.bn3.weight - torch.Size([256]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer1.2.bn3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.conv1.weight - torch.Size([128, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.0.bn1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.bn1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.conv2.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.0.bn2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.bn2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.conv3.weight - torch.Size([512, 128, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.0.bn3.weight - torch.Size([512]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer2.0.bn3.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.downsample.0.weight - torch.Size([512, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.0.downsample.1.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.0.downsample.1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.1.conv1.weight - torch.Size([128, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.1.bn1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.1.bn1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.1.conv2.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.1.bn2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.1.bn2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.1.conv3.weight - torch.Size([512, 128, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.1.bn3.weight - torch.Size([512]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer2.1.bn3.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.2.conv1.weight - torch.Size([128, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.2.bn1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.2.bn1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.2.conv2.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.2.bn2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.2.bn2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.2.conv3.weight - torch.Size([512, 128, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.2.bn3.weight - torch.Size([512]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer2.2.bn3.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.3.conv1.weight - torch.Size([128, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.3.bn1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.3.bn1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.3.conv2.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.3.bn2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.3.bn2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer2.3.conv3.weight - torch.Size([512, 128, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer2.3.bn3.weight - torch.Size([512]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer2.3.bn3.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.conv1.weight - torch.Size([256, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.0.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.0.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.0.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.0.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.downsample.0.weight - torch.Size([1024, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.0.downsample.1.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.0.downsample.1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.1.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.1.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.1.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.1.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.1.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.1.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.1.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.1.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.1.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.2.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.2.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.2.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.2.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.2.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.2.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.2.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.2.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.2.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.3.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.3.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.3.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.3.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.3.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.3.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.3.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.3.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.3.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.4.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.4.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.4.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.4.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.4.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.4.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.4.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.4.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.4.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.5.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.5.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.5.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.5.conv2.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.5.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.5.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer3.5.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer3.5.bn3.weight - torch.Size([1024]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer3.5.bn3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.conv1.weight - torch.Size([512, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.0.bn1.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.bn1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.conv2.weight - torch.Size([512, 512, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.0.bn2.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.bn2.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.0.bn3.weight - torch.Size([2048]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer4.0.bn3.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.downsample.0.weight - torch.Size([2048, 1024, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.0.downsample.1.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.0.downsample.1.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.1.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.1.bn1.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.1.bn1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.1.conv2.weight - torch.Size([512, 512, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.1.bn2.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.1.bn2.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.1.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.1.bn3.weight - torch.Size([2048]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer4.1.bn3.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.2.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.2.bn1.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.2.bn1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.2.conv2.weight - torch.Size([512, 512, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.2.bn2.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.2.bn2.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+backbone.layer4.2.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.layer4.2.bn3.weight - torch.Size([2048]): 
+ConstantInit: val=0, bias=0 
+
+backbone.layer4.2.bn3.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.0.conv.weight - torch.Size([256, 512, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.1.conv.weight - torch.Size([256, 1024, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.convs.1.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.1.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.2.conv.weight - torch.Size([256, 2048, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.convs.2.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.convs.2.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.extra_convs.0.conv.weight - torch.Size([256, 2048, 3, 3]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.extra_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+neck.extra_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.level_embeds - torch.Size([4, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.0.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.0.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.0.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.0.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.0.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.1.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.1.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.1.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.1.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.1.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.2.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.2.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.2.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.2.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.2.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.3.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.3.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.3.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.3.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.3.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.4.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.4.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.4.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.4.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.4.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.5.attentions.0.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.attentions.0.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.5.attentions.0.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.5.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.encoder.layers.5.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.encoder.layers.5.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.0.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.0.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.1.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.1.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.2.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.2.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.3.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.3.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.4.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.4.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.0.attn.in_proj_weight - torch.Size([768, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.attentions.0.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.0.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.attentions.0.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.sampling_offsets.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.sampling_offsets.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.attention_weights.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.attention_weights.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.value_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.attentions.1.value_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.attentions.1.output_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.attentions.1.output_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.ffns.0.layers.0.0.weight - torch.Size([2048, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.ffns.0.layers.0.0.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.ffns.0.layers.1.weight - torch.Size([256, 2048]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.decoder.layers.5.ffns.0.layers.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.decoder.layers.5.norms.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.enc_output.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.enc_output.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.enc_output_norm.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.enc_output_norm.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_trans.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.pos_trans.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_trans_norm.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_trans_norm.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.head_pos_embed.weight - torch.Size([2, 1]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.aux_pos_trans.0.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.aux_pos_trans.0.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.aux_pos_trans.1.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.aux_pos_trans.1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.aux_pos_trans_norm.0.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.aux_pos_trans_norm.0.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.aux_pos_trans_norm.1.weight - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.aux_pos_trans_norm.1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_trans.0.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.pos_feats_trans.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_trans.1.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in CoDeformDETRHead  
+
+query_head.transformer.pos_feats_trans.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_norm.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_norm.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_norm.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.transformer.pos_feats_norm.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.downsample.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.downsample.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.downsample.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.downsample.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.0.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.0.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.1.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.1.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.2.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.2.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.3.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.3.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.4.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.4.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.5.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.5.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.6.weight - torch.Size([80, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.cls_branches.6.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.0.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.1.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.2.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.3.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.4.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.5.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.0.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.2.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.4.weight - torch.Size([4, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.reg_branches.6.4.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+query_head.query_embedding.weight - torch.Size([300, 256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_cls.weight - torch.Size([9, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_cls.bias - torch.Size([9]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_reg.weight - torch.Size([36, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+rpn_head.rpn_reg.bias - torch.Size([36]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.fc_cls.weight - torch.Size([81, 1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.fc_cls.bias - torch.Size([81]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.fc_reg.weight - torch.Size([320, 1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.fc_reg.bias - torch.Size([320]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.shared_fcs.0.weight - torch.Size([1024, 12544]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.shared_fcs.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.shared_fcs.1.weight - torch.Size([1024, 1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.bbox_head.shared_fcs.1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.1.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.2.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.3.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.upsample.weight - torch.Size([256, 256, 2, 2]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.upsample.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.conv_logits.weight - torch.Size([80, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+roi_head.0.mask_head.conv_logits.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.cls_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.cls_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.cls_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.reg_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.reg_convs.0.gn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.reg_convs.0.gn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_cls.weight - torch.Size([80, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_cls.bias - torch.Size([80]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_reg.weight - torch.Size([4, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_reg.bias - torch.Size([4]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_centerness.weight - torch.Size([1, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.atss_centerness.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.scales.0.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.scales.1.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.scales.2.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.scales.3.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+
+bbox_head.0.scales.4.scale - torch.Size([]): 
+The value is the same before and after calling `init_weights` of CoDETR  
+2023-12-04 22:37:13,884 - mmdet - INFO - Automatic scaling of learning rate (LR) has been disabled.
+2023-12-04 22:37:14,275 - mmdet - INFO - Start running, host: Administrator@DESKTOP-I7P3MUU, work_dir: C:\Users\Administrator\Desktop\read-Co-DETR-main\tools\workdir
+2023-12-04 22:37:14,275 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) NumClassCheckHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) NumClassCheckHook                  
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2023-12-04 22:37:14,275 - mmdet - INFO - workflow: [('train', 1)], max: 12 epochs
+2023-12-04 22:37:14,275 - mmdet - INFO - Checkpoints will be saved to C:\Users\Administrator\Desktop\read-Co-DETR-main\tools\workdir by HardDiskBackend.
+2023-12-04 22:38:05,477 - mmdet - INFO - Epoch [1][50/59144]	lr: 2.000e-04, eta: 8 days, 9:48:04, time: 1.024, data_time: 0.372, memory: 9044, enc_loss_cls: 2.0757, enc_loss_bbox: 1.4687, enc_loss_iou: 1.1624, loss_cls: 3.3669, loss_bbox: 3.4240, loss_iou: 2.4755, d0.loss_cls: 1.9389, d0.loss_bbox: 3.4816, d0.loss_iou: 2.4961, d1.loss_cls: 2.1271, d1.loss_bbox: 3.4469, d1.loss_iou: 2.4797, d2.loss_cls: 2.6558, d2.loss_bbox: 3.4306, d2.loss_iou: 2.4779, d3.loss_cls: 3.6207, d3.loss_bbox: 3.4258, d3.loss_iou: 2.4771, d4.loss_cls: 3.3207, d4.loss_bbox: 3.4247, d4.loss_iou: 2.4764, loss_rpn_cls: 3.1520, loss_rpn_bbox: 0.3695, loss_cls0: 4.6537, acc0: 94.7617, loss_bbox0: 1.2629, loss_mask0: 8.5136, loss_cls1: 14.5863, loss_bbox1: 13.7906, loss_centerness1: 7.8349, loss_cls_aux0: 1.7758, loss_bbox_aux0: 1.1607, loss_iou_aux0: 0.5879, d0.loss_cls_aux0: 1.6585, d0.loss_bbox_aux0: 1.1507, d0.loss_iou_aux0: 0.5525, d1.loss_cls_aux0: 1.6586, d1.loss_bbox_aux0: 1.1530, d1.loss_iou_aux0: 0.5613, d2.loss_cls_aux0: 1.7114, d2.loss_bbox_aux0: 1.1550, d2.loss_iou_aux0: 0.5683, d3.loss_cls_aux0: 1.7694, d3.loss_bbox_aux0: 1.1570, d3.loss_iou_aux0: 0.5751, d4.loss_cls_aux0: 1.7737, d4.loss_bbox_aux0: 1.1587, d4.loss_iou_aux0: 0.5810, loss_cls_aux1: 1.7827, loss_bbox_aux1: 1.3864, loss_iou_aux1: 1.1583, d0.loss_cls_aux1: 1.6529, d0.loss_bbox_aux1: 1.3850, d0.loss_iou_aux1: 1.1582, d1.loss_cls_aux1: 1.6770, d1.loss_bbox_aux1: 1.3853, d1.loss_iou_aux1: 1.1580, d2.loss_cls_aux1: 1.7081, d2.loss_bbox_aux1: 1.3855, d2.loss_iou_aux1: 1.1580, d3.loss_cls_aux1: 1.7732, d3.loss_bbox_aux1: 1.3857, d3.loss_iou_aux1: 1.1580, d4.loss_cls_aux1: 1.7877, d4.loss_bbox_aux1: 1.3860, d4.loss_iou_aux1: 1.1582, loss: 157.7697, grad_norm: 252.4611
+2023-12-04 22:38:34,734 - mmdet - INFO - Epoch [1][100/59144]	lr: 2.000e-04, eta: 6 days, 14:35:14, time: 0.585, data_time: 0.008, memory: 9044, enc_loss_cls: 1.7671, enc_loss_bbox: 1.1562, enc_loss_iou: 1.1513, loss_cls: 2.0306, loss_bbox: 2.3776, loss_iou: 1.9572, d0.loss_cls: 1.8349, d0.loss_bbox: 2.4048, d0.loss_iou: 1.9830, d1.loss_cls: 1.9405, d1.loss_bbox: 2.3789, d1.loss_iou: 1.9625, d2.loss_cls: 1.9468, d2.loss_bbox: 2.3765, d2.loss_iou: 1.9587, d3.loss_cls: 1.9505, d3.loss_bbox: 2.3770, d3.loss_iou: 1.9578, d4.loss_cls: 1.9972, d4.loss_bbox: 2.3774, d4.loss_iou: 1.9573, loss_rpn_cls: 2.4289, loss_rpn_bbox: 0.4828, loss_cls0: 3.8320, acc0: 95.9375, loss_bbox0: 1.6408, loss_mask0: 8.1949, loss_cls1: 13.0523, loss_bbox1: 13.6231, loss_centerness1: 7.8040, loss_cls_aux0: 1.5300, loss_bbox_aux0: 1.1649, loss_iou_aux0: 0.6110, d0.loss_cls_aux0: 1.3076, d0.loss_bbox_aux0: 1.1607, d0.loss_iou_aux0: 0.5831, d1.loss_cls_aux0: 1.3362, d1.loss_bbox_aux0: 1.1615, d1.loss_iou_aux0: 0.5896, d2.loss_cls_aux0: 1.3856, d2.loss_bbox_aux0: 1.1624, d2.loss_iou_aux0: 0.5951, d3.loss_cls_aux0: 1.4605, d3.loss_bbox_aux0: 1.1631, d3.loss_iou_aux0: 0.5998, d4.loss_cls_aux0: 1.5242, d4.loss_bbox_aux0: 1.1641, d4.loss_iou_aux0: 0.6060, loss_cls_aux1: 1.5695, loss_bbox_aux1: 1.2766, loss_iou_aux1: 1.1745, d0.loss_cls_aux1: 1.3438, d0.loss_bbox_aux1: 1.2764, d0.loss_iou_aux1: 1.1744, d1.loss_cls_aux1: 1.3890, d1.loss_bbox_aux1: 1.2765, d1.loss_iou_aux1: 1.1744, d2.loss_cls_aux1: 1.4425, d2.loss_bbox_aux1: 1.2765, d2.loss_iou_aux1: 1.1745, d3.loss_cls_aux1: 1.5147, d3.loss_bbox_aux1: 1.2765, d3.loss_iou_aux1: 1.1745, d4.loss_cls_aux1: 1.5614, d4.loss_bbox_aux1: 1.2766, d4.loss_iou_aux1: 1.1745, loss: 135.5344, grad_norm: 124.8638
+2023-12-04 22:39:20,877 - mmdet - INFO - Epoch [1][150/59144]	lr: 2.000e-04, eta: 6 days, 22:20:51, time: 0.923, data_time: 0.008, memory: 13063, enc_loss_cls: 1.7581, enc_loss_bbox: 1.0780, enc_loss_iou: 1.1524, loss_cls: 1.9923, loss_bbox: 2.2901, loss_iou: 1.9052, d0.loss_cls: 1.8801, d0.loss_bbox: 2.3073, d0.loss_iou: 1.8908, d1.loss_cls: 1.9179, d1.loss_bbox: 2.2763, d1.loss_iou: 1.8892, d2.loss_cls: 1.9137, d2.loss_bbox: 2.2881, d2.loss_iou: 1.9059, d3.loss_cls: 1.9432, d3.loss_bbox: 2.2880, d3.loss_iou: 1.9065, d4.loss_cls: 1.9834, d4.loss_bbox: 2.2887, d4.loss_iou: 1.9061, loss_rpn_cls: 2.4155, loss_rpn_bbox: 0.4380, loss_cls0: 3.4350, acc0: 96.3027, loss_bbox0: 1.4269, loss_mask0: 8.1630, loss_cls1: 12.8724, loss_bbox1: 13.6894, loss_centerness1: 7.8354, loss_cls_aux0: 1.4930, loss_bbox_aux0: 1.1021, loss_iou_aux0: 0.5822, d0.loss_cls_aux0: 1.2905, d0.loss_bbox_aux0: 1.0990, d0.loss_iou_aux0: 0.5630, d1.loss_cls_aux0: 1.3261, d1.loss_bbox_aux0: 1.0997, d1.loss_iou_aux0: 0.5692, d2.loss_cls_aux0: 1.3552, d2.loss_bbox_aux0: 1.1004, d2.loss_iou_aux0: 0.5736, d3.loss_cls_aux0: 1.4000, d3.loss_bbox_aux0: 1.1011, d3.loss_iou_aux0: 0.5770, d4.loss_cls_aux0: 1.4655, d4.loss_bbox_aux0: 1.1016, d4.loss_iou_aux0: 0.5794, loss_cls_aux1: 1.5650, loss_bbox_aux1: 1.1668, loss_iou_aux1: 1.1858, d0.loss_cls_aux1: 1.3410, d0.loss_bbox_aux1: 1.1671, d0.loss_iou_aux1: 1.1851, d1.loss_cls_aux1: 1.3825, d1.loss_bbox_aux1: 1.1670, d1.loss_iou_aux1: 1.1852, d2.loss_cls_aux1: 1.4173, d2.loss_bbox_aux1: 1.1670, d2.loss_iou_aux1: 1.1853, d3.loss_cls_aux1: 1.4699, d3.loss_bbox_aux1: 1.1670, d3.loss_iou_aux1: 1.1856, d4.loss_cls_aux1: 1.5199, d4.loss_bbox_aux1: 1.1669, d4.loss_iou_aux1: 1.1856, loss: 132.2258, grad_norm: 114.0699
+2023-12-04 22:39:52,866 - mmdet - INFO - Epoch [1][200/59144]	lr: 2.000e-04, eta: 6 days, 12:16:42, time: 0.640, data_time: 0.008, memory: 13063, enc_loss_cls: 1.7089, enc_loss_bbox: 1.2024, enc_loss_iou: 1.0682, loss_cls: 1.9467, loss_bbox: 2.0865, loss_iou: 1.4773, d0.loss_cls: 1.8377, d0.loss_bbox: 2.0884, d0.loss_iou: 1.4869, d1.loss_cls: 1.8426, d1.loss_bbox: 2.0821, d1.loss_iou: 1.4805, d2.loss_cls: 1.8325, d2.loss_bbox: 2.0843, d2.loss_iou: 1.4784, d3.loss_cls: 1.8341, d3.loss_bbox: 2.0862, d3.loss_iou: 1.4782, d4.loss_cls: 1.8793, d4.loss_bbox: 2.0873, d4.loss_iou: 1.4763, loss_rpn_cls: 1.9842, loss_rpn_bbox: 0.3479, loss_cls0: 4.9046, acc0: 94.2871, loss_bbox0: 2.4804, loss_mask0: 7.9433, loss_cls1: 12.1159, loss_bbox1: 12.7449, loss_centerness1: 7.6939, loss_cls_aux0: 1.3111, loss_bbox_aux0: 1.2810, loss_iou_aux0: 0.6832, d0.loss_cls_aux0: 1.1057, d0.loss_bbox_aux0: 1.2800, d0.loss_iou_aux0: 0.6714, d1.loss_cls_aux0: 1.1260, d1.loss_bbox_aux0: 1.2803, d1.loss_iou_aux0: 0.6737, d2.loss_cls_aux0: 1.1579, d2.loss_bbox_aux0: 1.2803, d2.loss_iou_aux0: 0.6762, d3.loss_cls_aux0: 1.2161, d3.loss_bbox_aux0: 1.2805, d3.loss_iou_aux0: 0.6798, d4.loss_cls_aux0: 1.2789, d4.loss_bbox_aux0: 1.2807, d4.loss_iou_aux0: 0.6817, loss_cls_aux1: 1.3959, loss_bbox_aux1: 1.3085, loss_iou_aux1: 1.1092, d0.loss_cls_aux1: 1.1804, d0.loss_bbox_aux1: 1.3087, d0.loss_iou_aux1: 1.1101, d1.loss_cls_aux1: 1.2024, d1.loss_bbox_aux1: 1.3086, d1.loss_iou_aux1: 1.1099, d2.loss_cls_aux1: 1.2310, d2.loss_bbox_aux1: 1.3086, d2.loss_iou_aux1: 1.1097, d3.loss_cls_aux1: 1.2971, d3.loss_bbox_aux1: 1.3085, d3.loss_iou_aux1: 1.1093, d4.loss_cls_aux1: 1.3488, d4.loss_bbox_aux1: 1.3084, d4.loss_iou_aux1: 1.1092, loss: 127.8687, grad_norm: 104.9762
+2023-12-04 22:40:22,130 - mmdet - INFO - Epoch [1][250/59144]	lr: 2.000e-04, eta: 6 days, 4:05:01, time: 0.585, data_time: 0.008, memory: 13063, enc_loss_cls: 1.6889, enc_loss_bbox: 1.0483, enc_loss_iou: 1.1057, loss_cls: 1.8916, loss_bbox: 2.0426, loss_iou: 1.6111, d0.loss_cls: 1.9143, d0.loss_bbox: 2.0925, d0.loss_iou: 1.5708, d1.loss_cls: 1.8282, d1.loss_bbox: 2.0505, d1.loss_iou: 1.6024, d2.loss_cls: 1.8089, d2.loss_bbox: 2.0444, d2.loss_iou: 1.6122, d3.loss_cls: 1.8152, d3.loss_bbox: 2.0446, d3.loss_iou: 1.6112, d4.loss_cls: 1.8468, d4.loss_bbox: 2.0438, d4.loss_iou: 1.6115, loss_rpn_cls: 2.2631, loss_rpn_bbox: 0.3874, loss_cls0: 5.6419, acc0: 93.3516, loss_bbox0: 2.8774, loss_mask0: 7.9227, loss_cls1: 12.0233, loss_bbox1: 12.9815, loss_centerness1: 7.7700, loss_cls_aux0: 1.2623, loss_bbox_aux0: 1.2009, loss_iou_aux0: 0.6983, d0.loss_cls_aux0: 1.0748, d0.loss_bbox_aux0: 1.1982, d0.loss_iou_aux0: 0.6770, d1.loss_cls_aux0: 1.0782, d1.loss_bbox_aux0: 1.1987, d1.loss_iou_aux0: 0.6872, d2.loss_cls_aux0: 1.0892, d2.loss_bbox_aux0: 1.1991, d2.loss_iou_aux0: 0.6902, d3.loss_cls_aux0: 1.1371, d3.loss_bbox_aux0: 1.1996, d3.loss_iou_aux0: 0.6925, d4.loss_cls_aux0: 1.2060, d4.loss_bbox_aux0: 1.2000, d4.loss_iou_aux0: 0.6947, loss_cls_aux1: 1.3733, loss_bbox_aux1: 1.1615, loss_iou_aux1: 1.1309, d0.loss_cls_aux1: 1.1613, d0.loss_bbox_aux1: 1.1621, d0.loss_iou_aux1: 1.1310, d1.loss_cls_aux1: 1.1658, d1.loss_bbox_aux1: 1.1621, d1.loss_iou_aux1: 1.1309, d2.loss_cls_aux1: 1.1841, d2.loss_bbox_aux1: 1.1620, d2.loss_iou_aux1: 1.1309, d3.loss_cls_aux1: 1.2416, d3.loss_bbox_aux1: 1.1621, d3.loss_iou_aux1: 1.1309, d4.loss_cls_aux1: 1.3209, d4.loss_bbox_aux1: 1.1619, d4.loss_iou_aux1: 1.1308, loss: 128.1410, grad_norm: 107.5123
+2023-12-04 22:40:54,275 - mmdet - INFO - Epoch [1][300/59144]	lr: 2.000e-04, eta: 6 days, 0:30:35, time: 0.643, data_time: 0.009, memory: 13063, enc_loss_cls: 1.6914, enc_loss_bbox: 0.9315, enc_loss_iou: 1.0725, loss_cls: 1.8575, loss_bbox: 1.5352, loss_iou: 1.5505, d0.loss_cls: 1.7671, d0.loss_bbox: 1.5369, d0.loss_iou: 1.5122, d1.loss_cls: 1.7625, d1.loss_bbox: 1.5297, d1.loss_iou: 1.5323, d2.loss_cls: 1.8081, d2.loss_bbox: 1.5302, d2.loss_iou: 1.5494, d3.loss_cls: 1.8207, d3.loss_bbox: 1.5302, d3.loss_iou: 1.5529, d4.loss_cls: 1.8359, d4.loss_bbox: 1.5305, d4.loss_iou: 1.5545, loss_rpn_cls: 2.3054, loss_rpn_bbox: 0.4420, loss_cls0: 5.5177, acc0: 93.4648, loss_bbox0: 2.7977, loss_mask0: 7.6397, loss_cls1: 11.6475, loss_bbox1: 13.0249, loss_centerness1: 7.7931, loss_cls_aux0: 1.1440, loss_bbox_aux0: 1.2063, loss_iou_aux0: 0.6919, d0.loss_cls_aux0: 1.0010, d0.loss_bbox_aux0: 1.2056, d0.loss_iou_aux0: 0.6843, d1.loss_cls_aux0: 1.0114, d1.loss_bbox_aux0: 1.2058, d1.loss_iou_aux0: 0.6859, d2.loss_cls_aux0: 1.0265, d2.loss_bbox_aux0: 1.2059, d2.loss_iou_aux0: 0.6873, d3.loss_cls_aux0: 1.0452, d3.loss_bbox_aux0: 1.2063, d3.loss_iou_aux0: 0.6884, d4.loss_cls_aux0: 1.0906, d4.loss_bbox_aux0: 1.2064, d4.loss_iou_aux0: 0.6906, loss_cls_aux1: 1.1974, loss_bbox_aux1: 1.1056, loss_iou_aux1: 1.1401, d0.loss_cls_aux1: 1.0344, d0.loss_bbox_aux1: 1.1061, d0.loss_iou_aux1: 1.1402, d1.loss_cls_aux1: 1.0462, d1.loss_bbox_aux1: 1.1059, d1.loss_iou_aux1: 1.1402, d2.loss_cls_aux1: 1.0635, d2.loss_bbox_aux1: 1.1059, d2.loss_iou_aux1: 1.1402, d3.loss_cls_aux1: 1.0945, d3.loss_bbox_aux1: 1.1058, d3.loss_iou_aux1: 1.1403, d4.loss_cls_aux1: 1.1465, d4.loss_bbox_aux1: 1.1057, d4.loss_iou_aux1: 1.1402, loss: 121.9016, grad_norm: 115.2245
+2023-12-04 22:41:21,661 - mmdet - INFO - Epoch [1][350/59144]	lr: 2.000e-04, eta: 5 days, 19:16:26, time: 0.548, data_time: 0.007, memory: 13063, enc_loss_cls: 1.5373, enc_loss_bbox: 1.1529, enc_loss_iou: 1.1284, loss_cls: 1.8370, loss_bbox: 1.5717, loss_iou: 1.4783, d0.loss_cls: 1.8325, d0.loss_bbox: 1.6308, d0.loss_iou: 1.4749, d1.loss_cls: 1.8314, d1.loss_bbox: 1.5747, d1.loss_iou: 1.4782, d2.loss_cls: 1.8072, d2.loss_bbox: 1.5677, d2.loss_iou: 1.4811, d3.loss_cls: 1.8032, d3.loss_bbox: 1.5653, d3.loss_iou: 1.4841, d4.loss_cls: 1.8028, d4.loss_bbox: 1.5692, d4.loss_iou: 1.4800, loss_rpn_cls: 2.0731, loss_rpn_bbox: 0.4576, loss_cls0: 5.4933, acc0: 93.5605, loss_bbox0: 2.8209, loss_mask0: 7.8994, loss_cls1: 11.4325, loss_bbox1: 13.6468, loss_centerness1: 7.8467, loss_cls_aux0: 1.0818, loss_bbox_aux0: 1.3231, loss_iou_aux0: 0.6908, d0.loss_cls_aux0: 0.9809, d0.loss_bbox_aux0: 1.3240, d0.loss_iou_aux0: 0.6826, d1.loss_cls_aux0: 0.9819, d1.loss_bbox_aux0: 1.3239, d1.loss_iou_aux0: 0.6835, d2.loss_cls_aux0: 0.9893, d2.loss_bbox_aux0: 1.3240, d2.loss_iou_aux0: 0.6847, d3.loss_cls_aux0: 0.9974, d3.loss_bbox_aux0: 1.3239, d3.loss_iou_aux0: 0.6857, d4.loss_cls_aux0: 1.0360, d4.loss_bbox_aux0: 1.3237, d4.loss_iou_aux0: 0.6878, loss_cls_aux1: 1.1015, loss_bbox_aux1: 1.3273, loss_iou_aux1: 1.2158, d0.loss_cls_aux1: 0.9975, d0.loss_bbox_aux1: 1.3264, d0.loss_iou_aux1: 1.2155, d1.loss_cls_aux1: 0.9951, d1.loss_bbox_aux1: 1.3264, d1.loss_iou_aux1: 1.2154, d2.loss_cls_aux1: 1.0007, d2.loss_bbox_aux1: 1.3266, d2.loss_iou_aux1: 1.2155, d3.loss_cls_aux1: 1.0173, d3.loss_bbox_aux1: 1.3266, d3.loss_iou_aux1: 1.2155, d4.loss_cls_aux1: 1.0518, d4.loss_bbox_aux1: 1.3269, d4.loss_iou_aux1: 1.2157, loss: 124.3016, grad_norm: 111.8612
+2023-12-04 22:41:49,156 - mmdet - INFO - Epoch [1][400/59144]	lr: 2.000e-04, eta: 5 days, 15:23:59, time: 0.550, data_time: 0.008, memory: 13063, enc_loss_cls: 1.5598, enc_loss_bbox: 0.8541, enc_loss_iou: 1.1109, loss_cls: 1.7537, loss_bbox: 1.4299, loss_iou: 1.6246, d0.loss_cls: 1.7919, d0.loss_bbox: 1.4121, d0.loss_iou: 1.5831, d1.loss_cls: 1.7621, d1.loss_bbox: 1.4295, d1.loss_iou: 1.6180, d2.loss_cls: 1.7451, d2.loss_bbox: 1.4256, d2.loss_iou: 1.6292, d3.loss_cls: 1.7429, d3.loss_bbox: 1.4292, d3.loss_iou: 1.6253, d4.loss_cls: 1.7442, d4.loss_bbox: 1.4304, d4.loss_iou: 1.6240, loss_rpn_cls: 2.3061, loss_rpn_bbox: 0.5228, loss_cls0: 5.7545, acc0: 93.2578, loss_bbox0: 2.9288, loss_mask0: 7.7591, loss_cls1: 11.3502, loss_bbox1: 13.7932, loss_centerness1: 7.8558, loss_cls_aux0: 1.0376, loss_bbox_aux0: 1.1519, loss_iou_aux0: 0.6715, d0.loss_cls_aux0: 0.9753, d0.loss_bbox_aux0: 1.1507, d0.loss_iou_aux0: 0.6607, d1.loss_cls_aux0: 0.9774, d1.loss_bbox_aux0: 1.1508, d1.loss_iou_aux0: 0.6615, d2.loss_cls_aux0: 0.9842, d2.loss_bbox_aux0: 1.1509, d2.loss_iou_aux0: 0.6627, d3.loss_cls_aux0: 0.9881, d3.loss_bbox_aux0: 1.1510, d3.loss_iou_aux0: 0.6640, d4.loss_cls_aux0: 1.0137, d4.loss_bbox_aux0: 1.1516, d4.loss_iou_aux0: 0.6678, loss_cls_aux1: 1.0955, loss_bbox_aux1: 1.1836, loss_iou_aux1: 1.2348, d0.loss_cls_aux1: 1.0139, d0.loss_bbox_aux1: 1.1839, d0.loss_iou_aux1: 1.2353, d1.loss_cls_aux1: 1.0216, d1.loss_bbox_aux1: 1.1839, d1.loss_iou_aux1: 1.2353, d2.loss_cls_aux1: 1.0291, d2.loss_bbox_aux1: 1.1838, d2.loss_iou_aux1: 1.2352, d3.loss_cls_aux1: 1.0377, d3.loss_bbox_aux1: 1.1837, d3.loss_iou_aux1: 1.2351, d4.loss_cls_aux1: 1.0619, d4.loss_bbox_aux1: 1.1835, d4.loss_iou_aux1: 1.2348, loss: 122.2401, grad_norm: 97.7069
+2023-12-04 22:42:17,327 - mmdet - INFO - Epoch [1][450/59144]	lr: 2.000e-04, eta: 5 days, 12:40:51, time: 0.563, data_time: 0.007, memory: 13063, enc_loss_cls: 1.5285, enc_loss_bbox: 0.9883, enc_loss_iou: 0.9969, loss_cls: 1.8396, loss_bbox: 1.4631, loss_iou: 1.4893, d0.loss_cls: 1.8220, d0.loss_bbox: 1.4648, d0.loss_iou: 1.4760, d1.loss_cls: 1.8059, d1.loss_bbox: 1.4590, d1.loss_iou: 1.4920, d2.loss_cls: 1.8144, d2.loss_bbox: 1.4587, d2.loss_iou: 1.4930, d3.loss_cls: 1.8263, d3.loss_bbox: 1.4601, d3.loss_iou: 1.4901, d4.loss_cls: 1.8284, d4.loss_bbox: 1.4612, d4.loss_iou: 1.4919, loss_rpn_cls: 1.7697, loss_rpn_bbox: 0.3518, loss_cls0: 5.3735, acc0: 93.6055, loss_bbox0: 2.8494, loss_mask0: 7.6441, loss_cls1: 11.4224, loss_bbox1: 12.7615, loss_centerness1: 7.7632, loss_cls_aux0: 0.9948, loss_bbox_aux0: 1.3120, loss_iou_aux0: 0.7153, d0.loss_cls_aux0: 0.9647, d0.loss_bbox_aux0: 1.3124, d0.loss_iou_aux0: 0.7123, d1.loss_cls_aux0: 0.9658, d1.loss_bbox_aux0: 1.3124, d1.loss_iou_aux0: 0.7127, d2.loss_cls_aux0: 0.9723, d2.loss_bbox_aux0: 1.3124, d2.loss_iou_aux0: 0.7133, d3.loss_cls_aux0: 0.9738, d3.loss_bbox_aux0: 1.3124, d3.loss_iou_aux0: 0.7136, d4.loss_cls_aux0: 0.9793, d4.loss_bbox_aux0: 1.3123, d4.loss_iou_aux0: 0.7142, loss_cls_aux1: 1.0558, loss_bbox_aux1: 1.3227, loss_iou_aux1: 1.1660, d0.loss_cls_aux1: 1.0276, d0.loss_bbox_aux1: 1.3227, d0.loss_iou_aux1: 1.1663, d1.loss_cls_aux1: 1.0136, d1.loss_bbox_aux1: 1.3227, d1.loss_iou_aux1: 1.1663, d2.loss_cls_aux1: 1.0157, d2.loss_bbox_aux1: 1.3228, d2.loss_iou_aux1: 1.1662, d3.loss_cls_aux1: 1.0176, d3.loss_bbox_aux1: 1.3228, d3.loss_iou_aux1: 1.1662, d4.loss_cls_aux1: 1.0267, d4.loss_bbox_aux1: 1.3228, d4.loss_iou_aux1: 1.1661, loss: 121.1817, grad_norm: 99.0595
+2023-12-04 22:42:48,493 - mmdet - INFO - Epoch [1][500/59144]	lr: 2.000e-04, eta: 5 days, 11:41:02, time: 0.623, data_time: 0.008, memory: 13063, enc_loss_cls: 1.5404, enc_loss_bbox: 0.7147, enc_loss_iou: 1.0189, loss_cls: 1.7214, loss_bbox: 1.4118, loss_iou: 1.6157, d0.loss_cls: 1.7414, d0.loss_bbox: 1.4131, d0.loss_iou: 1.6142, d1.loss_cls: 1.7101, d1.loss_bbox: 1.4041, d1.loss_iou: 1.6171, d2.loss_cls: 1.7003, d2.loss_bbox: 1.4054, d2.loss_iou: 1.6178, d3.loss_cls: 1.7038, d3.loss_bbox: 1.4073, d3.loss_iou: 1.6194, d4.loss_cls: 1.6998, d4.loss_bbox: 1.4088, d4.loss_iou: 1.6186, loss_rpn_cls: 1.8436, loss_rpn_bbox: 0.3937, loss_cls0: 5.7288, acc0: 92.6699, loss_bbox0: 3.2101, loss_mask0: 7.5016, loss_cls1: 10.7511, loss_bbox1: 13.0097, loss_centerness1: 7.8274, loss_cls_aux0: 0.9307, loss_bbox_aux0: 1.2377, loss_iou_aux0: 0.7092, d0.loss_cls_aux0: 0.9210, d0.loss_bbox_aux0: 1.2386, d0.loss_iou_aux0: 0.7056, d1.loss_cls_aux0: 0.9220, d1.loss_bbox_aux0: 1.2387, d1.loss_iou_aux0: 0.7061, d2.loss_cls_aux0: 0.9203, d2.loss_bbox_aux0: 1.2386, d2.loss_iou_aux0: 0.7068, d3.loss_cls_aux0: 0.9197, d3.loss_bbox_aux0: 1.2384, d3.loss_iou_aux0: 0.7072, d4.loss_cls_aux0: 0.9222, d4.loss_bbox_aux0: 1.2383, d4.loss_iou_aux0: 0.7078, loss_cls_aux1: 0.9852, loss_bbox_aux1: 1.2050, loss_iou_aux1: 1.1966, d0.loss_cls_aux1: 0.9639, d0.loss_bbox_aux1: 1.2050, d0.loss_iou_aux1: 1.1967, d1.loss_cls_aux1: 0.9665, d1.loss_bbox_aux1: 1.2050, d1.loss_iou_aux1: 1.1966, d2.loss_cls_aux1: 0.9662, d2.loss_bbox_aux1: 1.2050, d2.loss_iou_aux1: 1.1966, d3.loss_cls_aux1: 0.9685, d3.loss_bbox_aux1: 1.2050, d3.loss_iou_aux1: 1.1966, d4.loss_cls_aux1: 0.9716, d4.loss_bbox_aux1: 1.2051, d4.loss_iou_aux1: 1.1967, loss: 119.4108, grad_norm: 90.1505
+2023-12-04 22:43:18,860 - mmdet - INFO - Epoch [1][550/59144]	lr: 2.000e-04, eta: 5 days, 10:34:52, time: 0.607, data_time: 0.008, memory: 13063, enc_loss_cls: 1.4880, enc_loss_bbox: 0.7501, enc_loss_iou: 1.0458, loss_cls: 1.7413, loss_bbox: 1.3662, loss_iou: 1.5445, d0.loss_cls: 1.7293, d0.loss_bbox: 1.3969, d0.loss_iou: 1.5477, d1.loss_cls: 1.7355, d1.loss_bbox: 1.3850, d1.loss_iou: 1.5424, d2.loss_cls: 1.7388, d2.loss_bbox: 1.3879, d2.loss_iou: 1.5373, d3.loss_cls: 1.7398, d3.loss_bbox: 1.3724, d3.loss_iou: 1.5429, d4.loss_cls: 1.7393, d4.loss_bbox: 1.3720, d4.loss_iou: 1.5428, loss_rpn_cls: 1.8693, loss_rpn_bbox: 0.4062, loss_cls0: 5.0556, acc0: 93.8203, loss_bbox0: 2.6725, loss_mask0: 7.5073, loss_cls1: 10.9516, loss_bbox1: 12.6473, loss_centerness1: 7.7537, loss_cls_aux0: 0.9225, loss_bbox_aux0: 1.1614, loss_iou_aux0: 0.6873, d0.loss_cls_aux0: 0.9139, d0.loss_bbox_aux0: 1.1622, d0.loss_iou_aux0: 0.6833, d1.loss_cls_aux0: 0.9214, d1.loss_bbox_aux0: 1.1622, d1.loss_iou_aux0: 0.6840, d2.loss_cls_aux0: 0.9226, d2.loss_bbox_aux0: 1.1623, d2.loss_iou_aux0: 0.6843, d3.loss_cls_aux0: 0.9225, d3.loss_bbox_aux0: 1.1623, d3.loss_iou_aux0: 0.6848, d4.loss_cls_aux0: 0.9244, d4.loss_bbox_aux0: 1.1623, d4.loss_iou_aux0: 0.6857, loss_cls_aux1: 0.9794, loss_bbox_aux1: 1.1781, loss_iou_aux1: 1.1775, d0.loss_cls_aux1: 0.9674, d0.loss_bbox_aux1: 1.1787, d0.loss_iou_aux1: 1.1779, d1.loss_cls_aux1: 0.9720, d1.loss_bbox_aux1: 1.1787, d1.loss_iou_aux1: 1.1780, d2.loss_cls_aux1: 0.9723, d2.loss_bbox_aux1: 1.1788, d2.loss_iou_aux1: 1.1781, d3.loss_cls_aux1: 0.9733, d3.loss_bbox_aux1: 1.1788, d3.loss_iou_aux1: 1.1782, d4.loss_cls_aux1: 0.9777, d4.loss_bbox_aux1: 1.1786, d4.loss_iou_aux1: 1.1780, loss: 116.7002, grad_norm: 90.9228
+2023-12-04 22:43:54,250 - mmdet - INFO - Epoch [1][600/59144]	lr: 2.000e-04, eta: 5 days, 11:18:34, time: 0.708, data_time: 0.008, memory: 13063, enc_loss_cls: 1.5583, enc_loss_bbox: 0.6472, enc_loss_iou: 0.9515, loss_cls: 1.7688, loss_bbox: 1.1739, loss_iou: 1.4935, d0.loss_cls: 1.7770, d0.loss_bbox: 1.2436, d0.loss_iou: 1.4650, d1.loss_cls: 1.7585, d1.loss_bbox: 1.2133, d1.loss_iou: 1.4653, d2.loss_cls: 1.7552, d2.loss_bbox: 1.2031, d2.loss_iou: 1.4688, d3.loss_cls: 1.7620, d3.loss_bbox: 1.1729, d3.loss_iou: 1.4916, d4.loss_cls: 1.7635, d4.loss_bbox: 1.1716, d4.loss_iou: 1.4913, loss_rpn_cls: 1.8699, loss_rpn_bbox: 0.3745, loss_cls0: 5.3458, acc0: 93.8008, loss_bbox0: 2.6277, loss_mask0: 7.3864, loss_cls1: 11.2170, loss_bbox1: 12.5219, loss_centerness1: 7.8032, loss_cls_aux0: 0.9858, loss_bbox_aux0: 1.1881, loss_iou_aux0: 0.6754, d0.loss_cls_aux0: 0.9830, d0.loss_bbox_aux0: 1.1909, d0.loss_iou_aux0: 0.6703, d1.loss_cls_aux0: 0.9826, d1.loss_bbox_aux0: 1.1911, d1.loss_iou_aux0: 0.6710, d2.loss_cls_aux0: 0.9876, d2.loss_bbox_aux0: 1.1910, d2.loss_iou_aux0: 0.6718, d3.loss_cls_aux0: 0.9850, d3.loss_bbox_aux0: 1.1908, d3.loss_iou_aux0: 0.6727, d4.loss_cls_aux0: 0.9852, d4.loss_bbox_aux0: 1.1904, d4.loss_iou_aux0: 0.6741, loss_cls_aux1: 1.0160, loss_bbox_aux1: 1.0942, loss_iou_aux1: 1.1322, d0.loss_cls_aux1: 0.9999, d0.loss_bbox_aux1: 1.0950, d0.loss_iou_aux1: 1.1330, d1.loss_cls_aux1: 1.0055, d1.loss_bbox_aux1: 1.0949, d1.loss_iou_aux1: 1.1331, d2.loss_cls_aux1: 1.0089, d2.loss_bbox_aux1: 1.0948, d2.loss_iou_aux1: 1.1331, d3.loss_cls_aux1: 1.0089, d3.loss_bbox_aux1: 1.0947, d3.loss_iou_aux1: 1.1329, d4.loss_cls_aux1: 1.0069, d4.loss_bbox_aux1: 1.0943, d4.loss_iou_aux1: 1.1327, loss: 115.4399, grad_norm: 99.3298
