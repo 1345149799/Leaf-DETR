@@ -1,148 +1,89 @@
-# DETRs with Collaborative Hybrid Assignments Training
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/detrs-with-collaborative-hybrid-assignments/object-detection-on-coco-minival)](https://paperswithcode.com/sota/object-detection-on-coco-minival?p=detrs-with-collaborative-hybrid-assignments)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/detrs-with-collaborative-hybrid-assignments/object-detection-on-coco)](https://paperswithcode.com/sota/object-detection-on-coco?p=detrs-with-collaborative-hybrid-assignments)	
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/detrs-with-collaborative-hybrid-assignments/object-detection-on-lvis-v1-0-minival)](https://paperswithcode.com/sota/object-detection-on-lvis-v1-0-minival?p=detrs-with-collaborative-hybrid-assignments)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/detrs-with-collaborative-hybrid-assignments/object-detection-on-lvis-v1-0-val)](https://paperswithcode.com/sota/object-detection-on-lvis-v1-0-val?p=detrs-with-collaborative-hybrid-assignments)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/detrs-with-collaborative-hybrid-assignments/instance-segmentation-on-lvis-v1-0-val)](https://paperswithcode.com/sota/instance-segmentation-on-lvis-v1-0-val?p=detrs-with-collaborative-hybrid-assignments)
-
-This repo is the official implementation of ["DETRs with Collaborative Hybrid Assignments Training"](https://arxiv.org/pdf/2211.12860.pdf) by Zhuofan Zong, Guanglu Song, and Yu Liu.
+**Leaf-Detr**: Progressive Adaptive Network with Lower Matching Cost for Dense Leaves Detection
 
 
-## News
+Leaves are the most important plant organs, and monitoring leaves is a     crucial aspect of crop surveillance. Dense leaf detection plays an important role as a fundamental technology for leaf monitoring.
+The methods for dense leaf detection generally use traditional modular detectors and general feature extraction techniques, without designing methods specifically for dense leaves in reality.
+In detail, in complex field scenarios, it still faces challenges like incomplete individual feature extraction due to high leaf overlap and difficult network convergence caused by excessive leaf density. To this end, we propose the Leaf-DETR framework, which effectively addresses these challenges through the Progressive Feature Fusion Pyramid Network (P-FPN) and the Crowded Query Refinement Strategy (CQR). First, we construct the largest dense leaf detection dataset to date, containing 1,696 images and 85,375 annotation boxes. Second, P-FPN alleviates the feature confusion problem of overlapping leaves through the multi-stage fusion of features and the Adaptive Feature Aggregation module (AFA), enhancing the interaction between low-level details and high-level semantics. Third, the CQR strategy significantly reduces the matching cost of crowded candidate boxes and improves the network convergence efficiency by culling a crowded query method and introducing a one-to-many matching mechanism. Finally, experiments show that Leaf-DETR outperforms existing detection methods on the self-built dataset and demonstrates good performance generalization in monitoring collected images, as well as for other staple food crops, which verifies its practicality in complex agricultural scenarios.
 
-* ***[10/19/2023]*** Our SOTA model Co-DETR w/ ViT-L is released now. Please refer to [this page](https://github.com/Sense-X/Co-DETR/blob/main/docs/en/sota_release.md) for more details.
-* ***[09/10/2023]*** We release LVIS inference configs and a stronger LVIS detector that achieves **64.5 box AP**.
-* ***[08/21/2023]*** Our O365 pre-trained Co-DETR with Swin-L achieves **64.8 AP** on COCO test-dev. The config and weights are released.
-* ***[07/20/2023]*** Code for Co-DINO is released: **55.4 AP** with ResNet-50 and **60.7 AP** with Swin-L.
-* ***[07/14/2023]*** Co-DETR is accepted to ICCV 2023!
-* ***[07/12/2023]*** We finetune Co-DETR on LVIS and achieve the best results **without TTA**: **72.0 box AP** and **59.7 mask AP** on LVIS minival, **68.0 box AP** and **56.0 mask AP** on LVIS val. For instance segmentation, we report the performance of the auxiliary mask branch.
-* ***[07/03/2023]*** Co-DETR with [ViT-L](https://github.com/baaivision/EVA/tree/master/EVA-02) **(304M parameters)** sets a new record of <strike>65.6</strike> **66.0 AP** on COCO test-dev, surpassing the previous best model [InternImage-G](https://github.com/OpenGVLab/InternImage) **(~3000M parameters)**. It is the **first model to exceed 66.0 AP on COCO test-dev**.
-* ***[07/03/2023]*** Code for Co-Deformable-DETR is released.
-* ***[11/19/2022]*** We achieved 64.4 AP on COCO minival and 64.5 AP on COCO test-dev with only ImageNet-1K as pre-training data. Codes will be available soon.
-   
+![Leaf-DETR](src/leafdetr3.png)
 
-## Introduction
+Figure 1: The overall framework of Leaf-DETR. It is equipped with P-FPN, CQR strategy and the improved JTAH. Through the extraction of discriminative features by P-FPN and the efficient training process equipped with CQR, the model is able to possess a powerful dense leaf detection capability.
 
-![teaser](figures/framework.png)
+**P-FPN: Progressive Feature Fusion Pyramid Network**
+![P-FPN](src/pfpn.png)
 
-In this paper, we present a novel collaborative hybrid assignments training scheme, namely Co-DETR, to learn more efficient and effective DETR-based detectors from versatile label assignment manners. 
-1. **Encoder optimization**: The proposed training scheme can easily enhance the encoder's learning ability in end-to-end detectors by training multiple parallel auxiliary heads supervised by one-to-many label assignments. 
-2. **Decoder optimization**: We conduct extra customized positive queries by extracting the positive coordinates from these auxiliary heads to improve attention learning of the decoder. 
-3. **State-of-the-art performance**: Co-DETR with [ViT-L](https://github.com/baaivision/EVA/tree/master/EVA-02) (304M parameters) is **the first model to achieve 66.0 AP on COCO test-dev.**
+Figure 2: Framework of Progressive Feature Pyramid Network. (a) Progressive architecture: information interaction is achieved through progressive feature fusion of adjacent levels.(b) Adaptive Feature Aggregation: it realizes feature fusion using a dual-path approach. The progressive feature fusion path and the dual-path feature fusion method can extract more discriminative leaf features.
 
-![teaser](figures/performance.png)
+**CQR: Crowded Query Refinement Strategy**
+We adopt a one-to-many matching mechanism during training, combined with NMS to select the optimal detection results. This strategy effectively improves training efficiency and sample utilization, while maintaining model lightweightness, and enhances the robustness of detecting dense, occluded, or small-sized leaves.
 
-## Model Zoo
-
-### Objects365 pre-trained Co-DETR
-
-Note: the inconsistent pre-training and fine-tuning augmentation settings (DETR and LSJ aug) for the Swin-L model degenerate the performance on LVIS.
-| Model  | Backbone | Epochs | Aug | Dataset | box AP (val) | Config | Download |
-| ------ | -------- | ------ | --- | ------- | ------------ | ------ | ----- |
-| Co-DINO | Swin-L | 16 | DETR | COCO | 64.1 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_swin_large_16e_o365tococo.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 16 | LSJ | LVIS | 64.5 | [config (test)](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_swin_large_16e_o365tolvis.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | ViT-L | 16 | LSJ | LVIS | 68.0 | [config (test)](https://github.com/Sense-X/Co-DETR/blob/main/docs/en/sota_release.md) | [model](https://github.com/Sense-X/Co-DETR/blob/main/docs/en/sota_release.md) |
-
-### Co-DETR with ResNet-50
-
-| Model  | Backbone | Epochs | Aug | Dataset | box AP | Config | Download |
-| ------ | -------- | ------ | --- | ------- | ------ | ------ | ----- |
-| Co-DINO | R50 | 12 | DETR | COCO | 52.1 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_r50_1x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | R50 | 12 | LSJ | COCO | 52.1 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_r50_1x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO-9enc | R50 | 12 | LSJ | COCO | 52.6 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_9encoder_lsj_r50_1x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | R50 | 36 | LSJ | COCO | 54.8 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_r50_3x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO-9enc | R50 | 36 | LSJ | COCO | 55.4 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_9encoder_lsj_r50_3x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
+**JTAH: Improved Jointly Trained Auxiliary Head**
+We introduce the improved Jointly Trained Auxiliary Head. Referring to the design of CQR, we discard the confidence values in the auxiliary head and instead assign randomized confidence values to each sample and use NMS to suppress the overlapping samples.
 
 
-### Co-DETR with Swin-L
+**Leaf-Detr**: Progressive Adaptive Network with Lower Matching Cost for Dense Leaves Detection
 
-| Model  | Backbone | Epochs | Aug | Dataset | box AP | Config | Download |
-| ------ | -------- | ------ | --- | ------- | ------ | ------ | ----- |
-| Co-DINO | Swin-L | 12 | DETR | COCO | 58.9 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_swin_large_1x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 24 | DETR | COCO | 59.8 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_swin_large_2x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 36 | DETR | COCO | 60.0 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_swin_large_3x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 12 | LSJ | COCO | 59.3 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_swin_large_1x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 24 | LSJ | COCO | 60.4 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_swin_large_2x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 36 | LSJ | COCO | 60.7 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_swin_large_3x_coco.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
-| Co-DINO | Swin-L | 36 | LSJ | LVIS | 56.9 | [config (test)](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_dino/co_dino_5scale_lsj_swin_large_3x_lvis.py) | [model](https://drive.google.com/drive/folders/1nAXOkzqrEgz-YnXxIEs4d5j9li_kmrnv?usp=sharing) |
+---
+**Introduction**
+To detect the dense leaves in the field, we propose the Leaf-DETR dense leaf detection framework, which includes the Progressive Feature Pyramid Network with a progressive framework, the Jointly Trained Auxiliary Head, and the Crowded Query Refinement strategy. As shown in Fig. \ref{fig:leafdetr}, the input leaf image first undergoes preliminary feature extraction by the backbone. Subsequently, the multi-scale features extracted from the backbone further interact and fuse in the P-FPN, which enhances the distinguishability between individual leaves and adjacent leaves. Furthermore, these enhanced features are uniformly encoded by the encoder and then transmitted to the decoder and the jointly trained auxiliary head. The decoder receives information from both the encoder and the auxiliary head simultaneously to expand the training samples. It is equipped with a crowded query refinement strategy to mitigate the adverse effects caused by leaf overlap. Finally, the output results will retain the bounding boxes of both the intact leaves and the occluded leaves.
 
-### Co-Deformable-DETR
+**Dependencies**
 
-| Model  | Backbone | Epochs | Queries | box AP | Config | Download |
-| ------ | -------- | ------ | ------- | ------ | ---- | --- |
-| Co-Deformable-DETR | R50 | 12 | 300 | 49.5 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_r50_1x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-T | 12 | 300 | 51.7 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_tiny_1x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-T | 36 | 300 | 54.1 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_tiny_3x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-S | 12 | 300 | 53.4 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_small_1x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-S | 36 | 300 | 55.3 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_small_3x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-B | 12 | 300 | 55.5 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_base_1x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-B | 36 | 300 | 57.5 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_base_3x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-L | 12 | 300 | 56.9 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_large_1x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
-| Co-Deformable-DETR | Swin-L | 36 | 900 | 58.5 | [config](https://github.com/Sense-X/Co-DETR/blob/main/projects/configs/co_deformable_detr/co_deformable_detr_swin_large_900q_3x_coco.py) | [model](https://drive.google.com/drive/folders/1asWoZ3SuM6APTL9D-QUF_YW9mjULNdh9?usp=sharing) \| [log](https://drive.google.com/drive/folders/1GktHRm2oAxmOzdK3jPaRqNu4uOQhecgZ?usp=sharing) |
+-  Python 3.7
+-  torch 1.11.0
+-  cuda 11.3
+-  Numpy 1.19.0
+-  torchvision 0.12.0
+-  mmcv-full 1.5.0
+-  mmdetection 2.25.3
 
-## Running
+**GitHub**: https://github.com/1345149799/Leaf-DETR
 
-### Install
-We implement Co-DETR using [MMDetection V2.25.3](https://github.com/open-mmlab/mmdetection/releases/tag/v2.25.3) and [MMCV V1.5.0](https://github.com/open-mmlab/mmcv/releases/tag/v1.5.0).
-The source code of MMdetection has been included in this repo and you only need to build MMCV following [official instructions](https://github.com/open-mmlab/mmcv/tree/v1.5.0#installation).
-We test our models under ```python=3.7.11,pytorch=1.11.0,cuda=11.3```. Other versions may not be compatible. 
+**Dataset**
+The largest dataset for dense leaf detection has been created, which includes 1,696 images of dense kiwifruit leaves, with a total of 85,375 target objects. Each image has a high resolution of six million pixels and contains detailed phenotypic characteristics of kiwifruit leaves.
+The code can be downloaded from [here](https://github.com/1345149799/Leaf-DETR). The datasets of Dense kiwifruit leaf detection dataset can be download from [here](https://plantmulti-1302037000.cos.ap-chengdu.myqcloud.com/upload/dense_kiwifruit_leaf.zip).Download the dataset to the './data' folder and renamed it as 'kiwifruitleaf'.
 
-### Data
-The COCO dataset and LVIS dataset should be organized as:
-```
-Co-DETR
-└── data
-    ├── coco
-    │   ├── annotations
-    │   │      ├── instances_train2017.json
-    │   │      └── instances_val2017.json
-    │   ├── train2017
-    │   └── val2017
-    │
-    └── lvis_v1
-        ├── annotations
-        │      ├── lvis_v1_train.json
-        │      └── lvis_v1_val.json
-        ├── train2017
-        └── val2017        
+**Pre-trained models**
+The pre-trained Leaf-DETR model are uploaded. You can download [it](),and download them to the './weight' folder.
+
+**Get started**
+**Train**
+```python
+python tools/train.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
+--work-dir workdir/leafdetr
 ```
 
-### Training
-Train Co-Deformable-DETR + ResNet-50 with 8 GPUs:
-```shell
-sh tools/dist_train.sh projects/configs/co_deformable_detr/co_deformable_detr_r50_1x_coco.py 8 path_to_exp
+**Test**
+```python
+python tools/test.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
+--work-dir workdir/leafdetr
 ```
-Train using slurm:
-```shell
-sh tools/slurm_train.sh partition job_name projects/configs/co_deformable_detr/co_deformable_detr_r50_1x_coco.py path_to_exp
-```
+**Results**
+Comparative experiment of different models
+![Result](src/table1.png)
 
-### Testing
-Test Co-Deformable-DETR + ResNet-50 with 8 GPUs, and evaluate:
-```shell
-sh tools/dist_test.sh  projects/configs/co_deformable_detr/co_deformable_detr_r50_1x_coco.py path_to_checkpoint 8 --eval bbox
-```
-Test using slurm:
-```shell
-sh tools/slurm_test.sh partition job_name projects/configs/co_deformable_detr/co_deformable_detr_r50_1x_coco.py path_to_checkpoint --eval bbox
-```
+Table 1: Comparison of the different object detection models on kiwifruit leaf detection. According to the horizontal line, it is divided
+into single-stage detectors, two-stage detectors and end-to-end detectors. The indicators of Leaf-DETR outperform those of existing object
+detectors, confirming its powerful dense leaf detection capability.
 
-## Cite Co-DETR
+Visualization comparison
+![Visualization](src/vis.png)
+Figure 1: Visualization comparison. (a)Select the image area with dense leaves, (b) SABL, (c) Faster R-CNN, (d) DDQ, (e) Leaf-DETR. The
+yellow boxes indicate undetected leaves. The yellow boxes represent the undetected leaves, and Leaf-DETR achieves comprehensive detection.
+The yellow boxes represent the undetected leaves. Compared with other models, Leaf-DETR has no cases of missed detection, confirming its
+superior detection coverage.
 
-If you find this repository useful, please use the following BibTeX entry for citation.
+**About Leaf-DETR**
+---
+---
+**Why Leaf-Detr?**
+Crop growth monitoring is crucial for sustainable agricultural production, as it enables the timely detection and resolution of issues affecting crop health and yield, thereby optimizing resource allocation and enhancing production efficiency. Leaves, being the primary photosynthetic organs, play a pivotal role in this ecosystem by absorbing sunlight, carbon dioxide, and water to synthesize organic compounds essential for plant development. Consequently, monitoring leaf characteristics is indispensable for assessing the overall crop health status. As shown in Figure 1, by combining advanced object detection techniques with downstream tasks to monitor leaves, it is possible to provide comprehensive information regarding leaf distribution, health status, and growth trajectories in complex agricultural environments where there is widespread leaf overlap and plant structures form complex visual patterns. Among them, the dense object detection technology is extremely important for achieving the detection of dense leaves, as the foundation for downstream applications.
 
-```latex
-@misc{codetr2022,
-      title={DETRs with Collaborative Hybrid Assignments Training},
-      author={Zhuofan Zong and Guanglu Song and Yu Liu},
-      year={2022},
-      eprint={2211.12860},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```
+![importance](src/importance.png)
 
-## License
+Figure 1: Motivation of leaf-deter. (a) The importance of leaves and the role of detecting leaves. (b) Differences in the DETRs architecture, Leaf-DETR has higher attention to the leaf edges and lower matching cost.
 
-This project is released under the MIT license. Please see the [LICENSE](LICENSE) file for more information.
+**Our pipeline**
+![pipeline](src/overview.png)
+Figure 2: Schematic diagram of kiwifruit leaf Data collection and application. (a) Data collection: Using UAV for high-altitude aerial imaging, (b) Image annotation: Through image screening, cropping, manual annotation, and AI-assisted annotation, (c) Model architecture: The proposed Leaf-DETR framework is equipped with P-FPN, CQR strategy, and the improved JTAH, (d) Agricultural application: Real-time leaf data is acquired through deployed cameras, enabling various downstream applications.
