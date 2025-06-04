@@ -37,8 +37,10 @@ To detect the dense leaves in the field, we propose the Leaf-DETR dense leaf det
 -  Numpy 1.19.0
 -  torchvision 0.12.0
 -  mmcv-full 1.5.0
--  mmdetection 2.25.3
-
+-  Install MMDetection locally
+```python
+pip install -v -e .
+```
 **GitHub**: https://github.com/1345149799/Leaf-DETR
 
 **Dataset**
