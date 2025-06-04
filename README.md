@@ -42,10 +42,12 @@ To detect the dense leaves in the field, we propose the Leaf-DETR dense leaf det
 **GitHub**: https://github.com/1345149799/Leaf-DETR
 
 **Dataset**
+
 The largest dataset for dense leaf detection has been created, which includes 1,696 images of dense kiwifruit leaves, with a total of 85,375 target objects. Each image has a high resolution of six million pixels and contains detailed phenotypic characteristics of kiwifruit leaves.
 The code can be downloaded from [here](https://github.com/1345149799/Leaf-DETR). The datasets of Dense kiwifruit leaf detection dataset can be download from [here](https://plantmulti-1302037000.cos.ap-chengdu.myqcloud.com/upload/dense_kiwifruit_leaf.zip).Download the dataset to the './data' folder and renamed it as 'kiwifruitleaf'.
 
 **Pre-trained models**
+
 The pre-trained Leaf-DETR model are uploaded. You can download [it](),and download them to the './weight' folder.
 
 **Get started**
@@ -64,7 +66,7 @@ python tools/test.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
 
 **Results**
 
-Comparative experiment
+**Comparative experiment**
 
 ![Result](src/table1.png)
 
@@ -72,7 +74,7 @@ Table 1: Comparison of the different object detection models on kiwifruit leaf d
 into single-stage detectors, two-stage detectors and end-to-end detectors. The indicators of Leaf-DETR outperform those of existing object
 detectors, confirming its powerful dense leaf detection capability.
 
-Visualization comparison
+**Visualization comparison**
 
 ![Visualization](src/vis.png)
 Figure 1: Visualization comparison. (a)Select the image area with dense leaves, (b) SABL, (c) Faster R-CNN, (d) DDQ, (e) Leaf-DETR. The
