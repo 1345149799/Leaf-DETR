@@ -26,6 +26,7 @@ We introduce the improved Jointly Trained Auxiliary Head. Referring to the desig
 
 ---
 **Introduction**
+
 To detect the dense leaves in the field, we propose the Leaf-DETR dense leaf detection framework, which includes the Progressive Feature Pyramid Network with a progressive framework, the Jointly Trained Auxiliary Head, and the Crowded Query Refinement strategy. As shown in Fig. \ref{fig:leafdetr}, the input leaf image first undergoes preliminary feature extraction by the backbone. Subsequently, the multi-scale features extracted from the backbone further interact and fuse in the P-FPN, which enhances the distinguishability between individual leaves and adjacent leaves. Furthermore, these enhanced features are uniformly encoded by the encoder and then transmitted to the decoder and the jointly trained auxiliary head. The decoder receives information from both the encoder and the auxiliary head simultaneously to expand the training samples. It is equipped with a crowded query refinement strategy to mitigate the adverse effects caused by leaf overlap. Finally, the output results will retain the bounding boxes of both the intact leaves and the occluded leaves.
 
 **Dependencies**
@@ -48,6 +49,7 @@ The code can be downloaded from [here](https://github.com/1345149799/Leaf-DETR).
 The pre-trained Leaf-DETR model are uploaded. You can download [it](),and download them to the './weight' folder.
 
 **Get started**
+
 **Train**
 ```python
 python tools/train.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
@@ -59,8 +61,11 @@ python tools/train.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
 python tools/test.py ./projects/configs/leafdetr/leafdetr_r50_pfpn_1x_coco.py
 --work-dir workdir/leafdetr
 ```
+
 **Results**
-Comparative experiment of different models
+
+Comparative experiment
+
 ![Result](src/table1.png)
 
 Table 1: Comparison of the different object detection models on kiwifruit leaf detection. According to the horizontal line, it is divided
@@ -68,6 +73,7 @@ into single-stage detectors, two-stage detectors and end-to-end detectors. The i
 detectors, confirming its powerful dense leaf detection capability.
 
 Visualization comparison
+
 ![Visualization](src/vis.png)
 Figure 1: Visualization comparison. (a)Select the image area with dense leaves, (b) SABL, (c) Faster R-CNN, (d) DDQ, (e) Leaf-DETR. The
 yellow boxes indicate undetected leaves. The yellow boxes represent the undetected leaves, and Leaf-DETR achieves comprehensive detection.
@@ -78,6 +84,7 @@ superior detection coverage.
 ---
 ---
 **Why Leaf-Detr?**
+
 Crop growth monitoring is crucial for sustainable agricultural production, as it enables the timely detection and resolution of issues affecting crop health and yield, thereby optimizing resource allocation and enhancing production efficiency. Leaves, being the primary photosynthetic organs, play a pivotal role in this ecosystem by absorbing sunlight, carbon dioxide, and water to synthesize organic compounds essential for plant development. Consequently, monitoring leaf characteristics is indispensable for assessing the overall crop health status. As shown in Figure 1, by combining advanced object detection techniques with downstream tasks to monitor leaves, it is possible to provide comprehensive information regarding leaf distribution, health status, and growth trajectories in complex agricultural environments where there is widespread leaf overlap and plant structures form complex visual patterns. Among them, the dense object detection technology is extremely important for achieving the detection of dense leaves, as the foundation for downstream applications.
 
 ![importance](src/importance.png)
@@ -85,5 +92,7 @@ Crop growth monitoring is crucial for sustainable agricultural production, as it
 Figure 1: Motivation of leaf-deter. (a) The importance of leaves and the role of detecting leaves. (b) Differences in the DETRs architecture, Leaf-DETR has higher attention to the leaf edges and lower matching cost.
 
 **Our pipeline**
+
 ![pipeline](src/overview.png)
+
 Figure 2: Schematic diagram of kiwifruit leaf Data collection and application. (a) Data collection: Using UAV for high-altitude aerial imaging, (b) Image annotation: Through image screening, cropping, manual annotation, and AI-assisted annotation, (c) Model architecture: The proposed Leaf-DETR framework is equipped with P-FPN, CQR strategy, and the improved JTAH, (d) Agricultural application: Real-time leaf data is acquired through deployed cameras, enabling various downstream applications.
